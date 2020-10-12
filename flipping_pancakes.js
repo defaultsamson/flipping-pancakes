@@ -22,7 +22,7 @@
    
 */
 
-let framerate = 60;
+let framerate = 120;
 
 let targetX = 250;
 
@@ -59,15 +59,11 @@ let firstStart = true;
 
 // Target y is plateLevel - bunHeight
 
-// Setup window
 function setup() {
   createCanvas(400, 400);
   frameRate(framerate);
   rectMode(CENTER); // Rect mode to center
   ellipseMode(CENTER); // Ellipse mode to center
-  
-  // Load Amiri-Slanted as the font
-  textFont(loadFont("Amiri-Slanted.ttf"));
 }
 
 function resetGame() {
@@ -90,15 +86,13 @@ function getPancakeOffset(i) {
   randomSeed(12345);
   
   // Start at 1 because we want to save the final random() call for the return
-  for (let j = 1; j < i; j++) {
-    random(-10, 10);
-  }
+  for (let j = 1; j < i; j++) random(-10, 10);
   
   return random(-10, 10);
 }
 
-// Draw the art
 function draw() {
+    console.log("drawing");
   
   if (lost) {
     
@@ -126,9 +120,8 @@ function draw() {
     let targetY = plateLevel - (pancakes * pancakeHeight);
     
     // Make the pancake go into a flying state if it falls off the side of the pan
-    if (pancakeX - pancakeRadiusHitbox > panRadius || pancakeFlying) {
+    if (pancakeX - pancakeRadiusHitbox > panRadius || pancakeFlying)
       pancakeFlying = true;
-    }
     
     if (pancakeFlying) {
     // Affect the pancake by gravity if it's off the pan
@@ -137,8 +130,9 @@ function draw() {
     // Accelerate the pancake if it's on the pan
       pancakeVelocityX += pancakeAccelerationPan;
     }
-    pancakeX += (pancakeVelocityX / 60);
-    pancakeY += (pancakeVelocityY / 60);
+    pancakeX += (pancakeVelocityX / framerate);
+    console.log("pancakeX: " + pancakeX);
+    pancakeY += (pancakeVelocityY / framerate);
     
     // If the pancake has landed on the top pancake
         // If the difference between the top pancake center X and the flying pancake center X is less than the hitbox threshold
@@ -232,8 +226,8 @@ function draw() {
   let panY = panTopLevel + (panHeight / 2);
   
   // Makes the pan bounce up to throw the pancake up
-  if (panAnimation < 25) {
-    panY -= 35 * sin(panAnimation * 0.04 * PI);
+  if (panAnimation < 25 * (framerate / 60)) {
+    panY -= 35 * sin(panAnimation * 0.04 * PI * (60 / framerate));
     panAnimation++;
   }
   
@@ -281,24 +275,25 @@ function draw() {
     // Display the losing screen
     fill(0, 0, 0);
     textSize(50);
-    text("Stacked", 130, 50);
+    text("Stacked", 110, 50);
     text(pancakes, 180, 100); // Display score
-    text("Pancakes", 120, 150);
+    text("Pancakes", 100, 150);
     
-    text("Left click", 120, 300);
-    text("to restart", 112, 350);
+    text("Left click", 100, 300);
+    text("to restart", 92, 350);
     
   } else if (firstStart) {
     // Display the initial instructions
     fill(0, 0, 0);
     textSize(50);
-    text("Left click to", 100, 50);
-    text("launch pancakes!", 60, 100);
+    text("Left click to", 70, 50);
+    text("launch pancakes!", 00, 100);
     
-    text("Left click", 120, 300);
-    text("to start", 135, 350);
+    text("Left click", 100, 300);
+    text("to start", 115, 350);
   }
 }
+
 
 function drawPancake(centerX, bottomY) {
   
